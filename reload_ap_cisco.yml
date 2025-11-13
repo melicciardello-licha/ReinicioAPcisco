@@ -1,0 +1,32 @@
+---
+- name: Reiniciar AP Cisco
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+  vars:
+    ansible_network_os: cisco.ios.ios
+    ansible_user: admin
+    ansible_password: "1234"
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    ansible_become: yes
+    ansible_become_method: enable
+    ansible_become_password: "Admin123!"
+
+  tasks:
+    - name: Habilitar modo CLI completo
+      ansible.netcommon.cli_command:
+        command: debug capwap console cli
+
+    - name: Reiniciar AP
+      ansible.netcommon.cli_command:
+        command: reload
+
+    - name: Confirmar reinicio (yes)
+      ansible.netcommon.cli_command:
+        command: yes
+      ignore_errors: true
+
+    - name: Confirmar reinicio final (yes)
+      ansible.netcommon.cli_command:
+        command: yes
+      ignore_errors: true
